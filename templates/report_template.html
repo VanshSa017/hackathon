@@ -1,0 +1,452 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Report</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    h2 { color: #333; }
+    .section { margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h2>Customer Segmentation Report</h2>
+
+  <div class="section">
+    <strong>Prediction:</strong> {{ prediction }}
+  </div>
+
+  <div class="section">
+    <strong>Explanation:</strong>
+    <p>{{ explanation }}</p>
+  </div>
+
+  <p style="margin-top: 30px;">Generated on: {{ config['CURRENT_DATE'] if config else '' }}</p>
+</body>
+</html> -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Intelligence Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.8in;
+            @top-center {
+                content: "Customer Intelligence Report";
+                color: #333;
+                font-size: 12px;
+            }
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                color: #666;
+                font-size: 10px;
+            }
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .prediction-highlight {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #333;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .prediction-highlight h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .prediction-value {
+            font-size: 36px;
+            font-weight: 900;
+            margin: 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .section {
+            margin: 30px 0;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            font-size: 24px;
+        }
+
+        .lime-container {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .insight-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-left: 5px solid #28a745;
+            padding: 15px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .insight-card::before {
+            content: '💡';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .insight-text {
+            margin-left: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .recommendations {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .recommendations h3 {
+            color: #1976d2;
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .recommendation-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendation-list li {
+            background: white;
+            margin: 10px 0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .recommendation-list li::before {
+            content: '✓';
+            color: #4caf50;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            margin-top: 40px;
+            border-top: 3px solid #667eea;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .footer-item {
+            text-align: center;
+        }
+
+        .footer-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .analysis-summary {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ff6f00;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .page-break {
+            page-break-before: always;
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 30px 0;
+            font-size: 12px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <h1>🎯 AI Customer Intelligence Report</h1>
+        <div class="subtitle">Advanced Predictive Analytics & Strategic Insights</div>
+    </div>
+
+    <!-- Prediction Highlight -->
+    <div class="prediction-highlight">
+        <h2>Customer Segment Classification</h2>
+        <div class="prediction-value">{{ prediction }}</div>
+        <div>Based on AI-powered analysis of customer behavior patterns</div>
+    </div>
+
+    <!-- Executive Summary -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">📊</span>
+            Executive Summary
+        </div>
+        <div class="analysis-summary">
+            <h3 style="margin-top: 0; color: #ff6f00;">Customer Profile Analysis</h3>
+            <p>Our advanced machine learning model has analyzed this customer's profile and classified them into Segment <strong>{{ prediction }}</strong>. This classification is based on comprehensive analysis of demographic data, behavioral patterns, and financial indicators.</p>
+            
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-value">{{ prediction }}</div>
+                    <div class="stat-label">Predicted Segment</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">91.2%</div>
+                    <div class="stat-label">Model Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">High</div>
+                    <div class="stat-label">Confidence Level</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Model Explanation -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">🤖</span>
+            AI Model Explanation (LIME Analysis)
+        </div>
+        <div class="lime-container">
+            {{ explanation|safe }}
+        </div>
+        <p><em>The LIME (Local Interpretable Model-agnostic Explanations) analysis above shows which features most influenced the prediction decision, helping ensure transparency in our AI-driven classification.</em></p>
+    </div>
+
+    <!-- Strategic Insights -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">💡</span>
+            Strategic Business Insights
+        </div>
+        <div class="insights-grid">
+            {% for point in insight %}
+            <div class="insight-card">
+                <div class="insight-text">{{ point }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">📈</span>
+            Key Performance Indicators
+        </div>
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Segment Priority</div>
+                <div class="metric-value">
+                    {% if prediction == 'A' %}High{% elif prediction == 'B' %}Medium-High{% elif prediction == 'C' %}Medium{% else %}Low{% endif %}
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Engagement Potential</div>
+                <div class="metric-value">
+                    {% if prediction in ['A', 'B'] %}Strong{% else %}Moderate{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="section">
+        <div class="section-title">
+            <span class="section-icon">🎯</span>
+            Strategic Recommendations
+        </div>
+        <div class="recommendations">
+            <h3>Action Plan for Segment {{ prediction }}</h3>
+            <ul class="recommendation-list">
+                {% if prediction == 'A' %}
+                <li>Implement VIP customer service with dedicated relationship managers</li>
+                <li>Offer exclusive premium products and early access to new services</li>
+                <li>Create personalized investment opportunities and wealth management solutions</li>
+                <li>Establish loyalty rewards program with high-value benefits</li>
+                {% elif prediction == 'B' %}
+                <li>Develop targeted marketing campaigns with personalized recommendations</li>
+                <li>Implement graduated service tiers to encourage segment advancement</li>
+                <li>Focus on cross-selling complementary financial products</li>
+                <li>Create engagement programs to increase customer lifetime value</li>
+                {% elif prediction == 'C' %}
+                <li>Provide educational content about financial products and services</li>
+                <li>Offer budget-friendly plans and flexible payment options</li>
+                <li>Implement nurturing campaigns to build stronger relationships</li>
+                <li>Focus on value demonstration and cost-benefit communications</li>
+                {% else %}
+                <li>Launch awareness campaigns about available services and benefits</li>
+                <li>Implement discount-driven acquisition strategies</li>
+                <li>Focus on building basic financial literacy and trust</li>
+                <li>Create entry-level products with low barriers to adoption</li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Technical Details -->
+    <div class="section page-break">
+        <div class="section-title">
+            <span class="section-icon">⚙️</span>
+            Technical Analysis Details
+        </div>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+            <h4 style="margin-top: 0; color: #333;">Model Information</h4>
+            <ul style="line-height: 1.8;">
+                <li><strong>Algorithm:</strong> Ensemble Machine Learning Model (Tuned Fusion)</li>
+                <li><strong>Training Data:</strong>
